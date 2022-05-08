@@ -9,9 +9,22 @@ router.route("/Events")
 
 .get(controller.getAllEvents)
 
-.post(controller.AddEvents)
+.post(
+    [
+        body("id").isInt().withMessage("id should be number"),
+        body("title").isString().withMessage("required").notEmpty(),
+        body("date").isDate().withMessage("date is invalid")
+    ]
+    ,controller.AddEvents)
 
-.put(controller.updateEvents)
+.put(
+    
+    [
+        body("id").isInt().withMessage("id should be number"),
+        body("title").isString().withMessage("required").notEmpty(),
+        body("date").isDate().withMessage("date is invalid")
+    ]
+    ,controller.updateEvents)
 
 .delete(controller.deleteEvents)
  
