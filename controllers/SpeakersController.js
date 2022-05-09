@@ -1,8 +1,8 @@
 //import pakages
-const speaker = require("./../Models/speakerModel");
+const speaker = require("./../modules/SpeakersModel");
 const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
-const checkValidation = require("./../middle wares/checkValidationFn");
+//const checkValidation = require("./../middle wares/checkValidationFn");
 
 module.exports.getAllSpeakers = (request, response, next) => {
     speaker.find({})
@@ -19,7 +19,7 @@ module.exports.addSpeaker = (request, response, next) => {
             if (data)
                 throw new Error("email already exist");
             // encrypt the password
-            bcrypt.hash(request.body.password, 10).then((hash) => {
+            bc.hash(request.body.password, 10).then((hash) => {
                 // add the speaker
                 let newSpeaker = new speaker({
                     _id: mongoose.Types.ObjectId(),

@@ -5,7 +5,10 @@ const mongoose =require("mongoose");
 
 
 const studentrouter =require("./routers/StudentsRouters");
+const speakersrouter=require("./routers/SpeakerRouters");
 const Eventsrouter =require("./routers/EventsRouters");
+const authRouter =require("./routers/authRouter");
+
 
 //create server 
 const server=express();
@@ -58,12 +61,14 @@ server.use((request,response,next)=>{
 server.get("/home",(request,response,next)=>{
     response.send("home page");
 })
+//auth router
+server.use(authRouter);
 //2-studentsrouter
 server.use(studentrouter);
-//3-eventsrouter
+//3-speakerRouter
+server.use(speakersrouter);
+//4-eventsrouter
 server.use(Eventsrouter);
-//4-spreakersrouter
-//server.use(speakersrouter);
 
 
 

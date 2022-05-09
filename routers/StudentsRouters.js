@@ -14,7 +14,7 @@ router.route("/students")
     [
         body("id").isInt().withMessage("id should be numbers"),
         body("name").isAlpha().withMessage("name should be in letters").isLength({max:10}).withMessage("should be less than 10"),
-        body("password").isAlphanumeric.withMessage("password must between 8 and 15 numbers and letters")
+        body("password").isAlphanumeric().withMessage("password must between 8 and 15 numbers and letters")
     ]
     ,controller.AddStutent)
 
@@ -22,7 +22,7 @@ router.route("/students")
     [
         body("id").isInt().withMessage("id should be numbers"),
         body("name").isAlpha().withMessage("name should be in letters").isLength({max:10}).withMessage("should be less than 10"),
-        body("password").isAlphanumeric.withMessage("password must between 8 and 15 numbers and letters")
+        body("password").isAlphanumeric().withMessage("password must between 8 and 15 numbers and letters")
     ]
     ,controller.updateStudent)
 
