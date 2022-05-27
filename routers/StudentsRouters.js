@@ -26,7 +26,7 @@ router.route("/students")
     ]
     ,controller.updateStudent)
 
-.delete(controller.deleteStutent)
+router.delete("/students/:id",controller.deleteStutent)
  
 router.get("/students/:id",controller.getstudentbyid);
 module.exports=router;

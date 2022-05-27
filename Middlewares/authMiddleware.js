@@ -7,13 +7,15 @@ let token,decodedtoken;
 try{
   token= req.get("Authorization").split(" ")[1];
  decodedtoken=jwt.verify(token,"mysecretkey");
+
+ //authanticated
+req.decodedtoken=decodedtoken.role;
+next();
 }
 catch(error){
     next(new Error("not Authorized"));
 } 
 
-//authanticated
-req.decodedtoken=decodedtoken.role;
-next();
+
 }
 

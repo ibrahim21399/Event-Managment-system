@@ -27,6 +27,6 @@ router.route("/speakers")
     ,controller.updateSpeaker)
 
 
-.delete(controller.deleteSpeaker) 
+router.delete("/speakers/:id",controller.deleteSpeaker);
 router.get("/speakers/:id",controller.getSpeakerByID);
 module.exports=router;
