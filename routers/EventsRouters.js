@@ -26,15 +26,7 @@ router.route("/Events")
     ]
     ,controller.updateEvents)
 
-    router.route("/events/:id")
-    .get(
-        [
-            prams("id").isInt().withMessage("id should be int")
-        ],
-        controller.getEventbyid)
-    .delete(
-        [
-            prams("id").isInt().withMessage("id should be int")
-        ],
-        controller.deleteEvents);
+router.delete("/Events/:id",controller.deleteEvents)
+ 
+router.get("/Events/:id",controller.getEventbyid);
 module.exports=router;

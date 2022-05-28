@@ -18,7 +18,7 @@ module.exports.getstudentbyid=(request,response)=>{
 //add student (post)
 module.exports.AddStutent=(request,response,next)=>{
    
-    students.findOne({email:request.body.Email})
+    students.findOne({Email:request.body.Email})
     .then((data)=>{
         let results=validationResult(request);
         if(data)

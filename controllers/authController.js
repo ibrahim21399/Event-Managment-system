@@ -1,50 +1,76 @@
-const jwt =require("jsonwebtoken");
-const student = require("./../modules/StudentsModel");
-const speaker = require("./../modules/SpeakersModel");
-const checkValidation = require("./../Middlewares/checkValidation");
+const jwt = require("jsonwebtoken");
+const student = require("../modules/StudentsModel");
+const speaker = require("../modules/SpeakersModel");
+const checkValidation = require("../Middlewares/checkValidation");
+const bcrypt = require('bcrypt');
+const { reject } = require("bcrypt/promises");
 
-let admin = false;
+const adminEmail = "admin@gmail.com";
+const adminPassword = "admin123";
 
-module.exports.login=(request,response,next)=>{
-    const students =require("./../modules/StudentsModel")
-    let token;
-    if(request.body.email=="admin@gmail.com"&&request.body.password=="admin123")
-    {
-       token = jwt.sign({_id:data._id,email:data.email,role:"admin"},"mysecretkey",{expiresIn:"1h"});
-       response.status(200).json({msg:"admin login",token})
-        
-       admin=true;
-    }
-    else if(admin==false){
-        students.findOne({email:request.body.email,password:request.body.password})
-        .then(data=>{
-            if(data==null)throw new Error("incorrect user or password!!");
+module.exports.login = async(request, response, next) => {
+    checkValidation(request);
+    const email = request.body.Email;
+    let password = request.body.password;
+    let loggedIn = false;
 
-            token = jwt.sign({_id:data._id,email:data.email,role:"student"},"mysecretkey",{expiresIn:"1h"});
-            response.status(200).json({msg:"student login",token})
-            console.log("student");
-            
-        })
-        .catch(error=>next(error));
-        next(new Error("incorrect user or password!!"));
-    }
+    // check if it's the admin
+    if (email == adminEmail && password == adminPassword) {
+        let token = jwt.sign({
+                role: "admin"
+            },
+            "thisismysecuritykey", { expiresIn: "1h" })
+        response.status(200).json({ message: "admin logged in", token });
+        loggedIn = true;
+    } else if (!loggedIn) {
+        // check if it's a student
+        await student.findOne({
+            Email: email,
+            password: password
+        }).then((data) => {
+            console.log("std");
+            console.log(data);
+            if (data) {
+                let token = jwt.sign({
+                        role: "student"
+                    },
+                    "thisismysecuritykey", { expiresIn: "1h" })
+                response.status(200).json({ message: "student logged in", token });
+                loggedIn = true;
+                console.log("std");
+            }
+            console.log("std-");
+            console.log(loggedIn);
+        }).catch(error => next(error));
 
-    if (admin==false) {
-        // check if it's a speaker
-        console.log("speaker");
-        await speaker.findOne({
-            Email: request.body.Email
-            ,password:request.body.password})
-            .then(data=>{
-                if(data==null)throw new Error("incorrect user or password!!");
-    
-                token = jwt.sign({_id:data._id,email:data.email,role:"student"},"mysecretkey",{expiresIn:"1h"});
-                response.status(200).json({msg:"Speakerlogin",token})
-                console.log("speaker");
-                
-            })
-            .catch(error=>next(error));
-            next(new Error("incorrect user or password!!"));
+
+        if (!loggedIn) {
+            // check if it's a speaker
+            console.log("speaker");
+            await speaker.findOne({
+                Email: email
+            }).then(async data => {
+                console.log("speaker 2");
+                if (data) {
+                    await bcrypt.compare(password, data.password, (err, result) => {
+                        // if the password matches the hashed password for that speaker
+                        console.log("decrypt 3");
+
+                        if (result) {
+                            let token = jwt.sign({
+                                    role: "speaker"
+                                },
+                                "thisismysecuritykey", { expiresIn: "1h" });
+                            response.status(200).json({ message: "speaker logged in", token });
+                            loggedIn = true;
+                        } else {
+                            throw new Error("username or password incorrect");
+                        }
+                    });
+                    console.log("speaker 4");
+                }
+            }).catch(error => next(error));
         }
+    }
 
 }
